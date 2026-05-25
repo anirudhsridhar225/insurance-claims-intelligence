@@ -1,6 +1,8 @@
 .vscode/*
 .idea/*
+
 frontend/node_modules/*
+
 ml/__pycache__/*
 ml/*/__pycache__/*
 
