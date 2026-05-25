@@ -1,0 +1,10 @@
+.vscode/*
+.idea/*
+frontend/node_modules/*
+ml/__pycache__/*
+ml/*/__pycache__/*
+
+.env
+frontend/.env
+backend/.env
+ml/.env
