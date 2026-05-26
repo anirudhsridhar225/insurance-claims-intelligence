@@ -1,0 +1,21 @@
+
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+
+body {
+  @apply bg-brand-ink text-gray-100 antialiased;
+}
+
+
+@layer utilities {
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+}
