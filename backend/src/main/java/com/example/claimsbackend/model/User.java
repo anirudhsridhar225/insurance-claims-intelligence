@@ -17,11 +17,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private @NotBlank String name;
-    private @NotNull String passwordHash;
-    private @NotNull String email;
-    private @NotNull String phoneNumber;
+    private String name;
+    private String passwordHash;
+    private String email;
+    private String phoneNumber;
 
-    @Enumerated
-    private @NotNull UserType userType;
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 }

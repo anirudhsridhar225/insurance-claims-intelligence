@@ -2,14 +2,18 @@ package com.example.claimsbackend.service;
 
 import com.example.claimsbackend.dto.UserRequestDTO;
 import com.example.claimsbackend.dto.UserResponseDTO;
+import com.example.claimsbackend.dto.UserUpdateDTO;
 import com.example.claimsbackend.exception.InvalidPasswordException;
 import com.example.claimsbackend.exception.InvalidPhoneNumberException;
+import com.example.claimsbackend.mapper.UserMapper;
 import com.example.claimsbackend.model.User;
 import com.example.claimsbackend.repository.UserRepository;
 import com.example.claimsbackend.validation.PasswordValidator;
 import com.example.claimsbackend.validation.PhoneNumberValidator;
+import org.hibernate.service.UnknownServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,41 +25,35 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private BCryptPasswordEncoder encoder;
+    private PasswordEncoder encoder;
 
-    private static User mapToEntity(UserRequestDTO request, String hashedPassword) {
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setUserType(request.getUserType());
-        user.setPasswordHash(hashedPassword);
-
-        return user;
-    }
-
-    private static UserResponseDTO mapToDTO(User user) {
-        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getPhoneNumber(), user.getUserType());
-    }
+    @Autowired
+    private UserMapper userMapper;
 
     public List<UserResponseDTO> getUsers() {
-        return userRepository.findAll().stream().map(UserService::mapToDTO).toList();
+        return userRepository.findAll().stream().map(user -> userMapper.mapToResponse(user)).toList();
     }
 
-    public UserResponseDTO addUser(UserRequestDTO request) {
-        if (!PhoneNumberValidator.isValidPhoneNumber(request.getPhoneNumber())) {
-            throw new InvalidPhoneNumberException("malformed phone number");
-        }
+    public UserResponseDTO getCurrentUser(String name) {
+        User user = userRepository.findByName(name).orElseThrow(() -> new UsernameNotFoundException("User with username " + name + " not found"));
 
-        if (!PasswordValidator.isValidPassword(request.getPassword())) {
-            throw new InvalidPasswordException("entered password not safe enough, please try again");
-        }
+        return userMapper.mapToResponse(user);
+    }
 
-        String hashedPassword = encoder.encode(request.getPassword());
-        User user = mapToEntity(request, hashedPassword);
+    public UserResponseDTO updateCurrentUser(String name, UserUpdateDTO request) {
+        User user = userRepository.findByName(name).orElseThrow(() -> new UsernameNotFoundException("User with username " + name + " not found"));
+
+        user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhoneNumber());
 
         User savedUser = userRepository.save(user);
 
-        return mapToDTO(savedUser);
+        return userMapper.mapToResponse(savedUser);
+    }
+
+    public void deleteCurrentUser(String name) {
+        User user = userRepository.findByName(name).orElseThrow(() -> new UsernameNotFoundException("User with username " + name + " not found"));
+
+        userRepository.delete(user);
     }
 }
