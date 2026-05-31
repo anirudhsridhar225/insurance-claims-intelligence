@@ -16,5 +16,5 @@ public class ClaimRequestDTO {
     private @NotNull String description;
     private @NotNull ClaimStatus status;
     private @NotNull UUID customerId;
-    private @NotNull UUID financialsId;
+    private @NotNull ClaimFinancialRequestDTO financialRequestDTO;
 }
