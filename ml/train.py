@@ -24,9 +24,9 @@ os.makedirs("model", exist_ok=True)
 
 # ── 1. Load CSVs ──────────────────────────────────────────────────────────────
 print("Loading CSVs …")
-claims   = pd.read_csv("data/claims_history.csv")
-policy   = pd.read_csv("data/policy_data.csv")
-customer = pd.read_csv("data/customer_profiles.csv")
+claims   = pd.read_csv("input/claims_history.csv")
+policy   = pd.read_csv("input/policy_data.csv")
+customer = pd.read_csv("input/customer_profiles.csv")
 
 # ── 2. Merge (same logic as notebook) ────────────────────────────────────────
 df = (claims
