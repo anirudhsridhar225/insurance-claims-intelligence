@@ -11,3 +11,4 @@ frontend/.env
 backend/.env
 ml/.env
 notifications/.env
+/.metadata/

@@ -2,12 +2,12 @@ package com.example.claimsbackend.dto;
 
 import java.math.BigDecimal;
 
+import com.example.claimsbackend.model.PaymentStatus;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import com.example.claimsbackend.model.PaymentStatus;
 
 @Data
 @NoArgsConstructor
