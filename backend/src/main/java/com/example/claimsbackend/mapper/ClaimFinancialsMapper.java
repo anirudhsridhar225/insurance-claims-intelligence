@@ -3,7 +3,8 @@ package com.example.claimsbackend.mapper;
 import com.example.claimsbackend.dto.ClaimFinancialRequestDTO;
 import com.example.claimsbackend.dto.ClaimFinancialResponseDTO;
 import com.example.claimsbackend.model.ClaimFinancials;
-
+import org.springframework.stereotype.Component;
+@Component
 public class ClaimFinancialsMapper implements EntityMapper<ClaimFinancials, ClaimFinancialRequestDTO, ClaimFinancialResponseDTO> {
     @Override
     public ClaimFinancials mapToEntity(ClaimFinancialRequestDTO requestDTO) {
