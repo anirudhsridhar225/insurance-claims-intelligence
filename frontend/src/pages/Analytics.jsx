@@ -1,18 +1,50 @@
+import { useState, useEffect } from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, AreaChart, Area } from 'recharts';
+import { api } from '../services/api';
 
 export default function Analytics() {
-  const lossRatioData = [
-    { name: 'Motor', value: 68, fill: '#E05C6E' },
-    { name: 'Health', value: 54, fill: '#C9A84C' },
-    { name: 'Property', value: 45, fill: '#4A90D9' },
-    { name: 'Life', value: 28, fill: '#5BAD80' },
-  ];
+  const [lossRatioData, setLossRatioData] = useState([]);
+  const [trendData, setTrendData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const trendData = [
-    { name: 'Jan', policies: 120 }, { name: 'Feb', policies: 145 },
-    { name: 'Mar', policies: 130 }, { name: 'Apr', policies: 170 },
-    { name: 'May', policies: 190 },
-  ];
+  useEffect(() => {
+    I_fetchAnalytics();
+  }, []);
+
+  const I_fetchAnalytics = async () => {
+    try {
+      // Fetch both endpoints concurrently
+      const [lossRes, trendRes] = await Promise.all([
+        api.get('/analytics/loss-ratio?group_by=insurance_type'),
+        api.get('/analytics/claims-trend?group_by=month')
+      ]);
+
+      // Map the FastAPI loss ratio response to Recharts format
+      const mappedLoss = lossRes.data.breakdown.map((item, index) => {
+        const colors = ['#E05C6E', '#C9A84C', '#4A90D9', '#5BAD80'];
+        return {
+          name: item.group,
+          value: Math.round(item.loss_ratio * 100), // Convert decimal to percentage
+          fill: colors[index % colors.length]
+        };
+      });
+
+      // Map the FastAPI trend response to Recharts format
+      const mappedTrend = trendRes.data.trend.map(item => ({
+        name: item.period,
+        policies: item.claim_count // Using claim_count as the trend metric
+      }));
+
+      setLossRatioData(mappedLoss);
+      setTrendData(mappedTrend);
+    } catch (error) {
+      console.error("Error fetching analytics from EC2:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div className="p-8 text-brand-gold animate-pulse font-mono">Fetching Analytics from EC2...</div>;
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -49,8 +81,8 @@ export default function Analytics() {
 
         {/* Policy Trend Chart */}
         <div className="bg-brand-surface border border-gray-800 rounded-xl p-6 shadow-lg">
-          <h3 className="font-serif text-lg text-gray-100 mb-1">Policy Issuance Trend</h3>
-          <p className="font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-6">YTD 2026</p>
+          <h3 className="font-serif text-lg text-gray-100 mb-1">Monthly Claims Volume</h3>
+          <p className="font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-6">API: GET /analytics/claims-trend</p>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={trendData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>

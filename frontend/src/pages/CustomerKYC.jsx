@@ -65,8 +65,18 @@ export default function CustomerKYC() {
             <h3 className="font-serif text-lg text-brand-gold mb-6 border-b border-gray-800 pb-2">KYC Documents</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-              <FileUploadZone title="Aadhaar / National ID" icon={<CreditCard size={24} />} subtitle="Upload Aadhaar (PDF/JPG)" />
-              <FileUploadZone title="PAN Card" icon={<FileText size={24} />} subtitle="Upload PAN (PDF/JPG)" />
+              <FileUploadZone 
+                id="aadhaar-upload"
+                title="Aadhaar / National ID" 
+                icon={<CreditCard size={24} />} 
+                subtitle="Upload Aadhaar (PDF/JPG)" 
+              />
+              <FileUploadZone 
+                id="pan-upload"
+                title="PAN Card" 
+                icon={<FileText size={24} />} 
+                subtitle="Upload PAN (PDF/JPG)" 
+              />
             </div>
 
             <div className="flex gap-4">
@@ -133,17 +143,47 @@ function InputField({ label, type = "text", placeholder, defaultValue }) {
   );
 }
 
-function FileUploadZone({ title, icon, subtitle }) {
+function FileUploadZone({ title, icon, subtitle, id }) {
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0].name);
+    }
+  };
+
   return (
     <div>
-      <label className="block font-mono text-[10px] tracking-widest text-gray-400 uppercase mb-2">{title}</label>
-      <div className="border-2 border-dashed border-gray-700 hover:border-brand-gold hover:bg-brand-gold/5 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all group">
+      <div className="block font-mono text-[10px] tracking-widest text-gray-400 uppercase mb-2">
+        {title}
+      </div>
+      <label 
+        htmlFor={id} 
+        className="block border-2 border-dashed border-gray-700 hover:border-brand-gold hover:bg-brand-gold/5 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all group"
+      >
         <div className="text-gray-500 group-hover:text-brand-gold mb-3 transition-colors">
           {icon}
         </div>
-        <div className="text-xs text-gray-300 mb-1">{subtitle}</div>
-        <div className="font-mono text-[9px] text-gray-500">Max 5 MB</div>
-      </div>
+        
+        {selectedFile ? (
+          <div className="text-sm text-brand-gold font-medium mb-1 truncate w-full px-4">
+            {selectedFile}
+          </div>
+        ) : (
+          <>
+            <div className="text-xs text-gray-300 mb-1">{subtitle}</div>
+            <div className="font-mono text-[9px] text-gray-500">Max 5 MB</div>
+          </>
+        )}
+      </label>
+
+      <input 
+        type="file" 
+        id={id} 
+        className="hidden" 
+        onChange={handleFileChange}
+        accept=".pdf, .jpg, .jpeg, .png" 
+      />
     </div>
   );
 }
@@ -166,7 +206,6 @@ function StepItem({ step, current, title, desc }) {
         </div>
         <div className="font-mono text-[10px] text-gray-500 mt-0.5">{desc}</div>
       </div>
-      {/* Status Badge */}
       <div className="ml-auto mt-1">
         {isCompleted && <span className="bg-[#5BAD80]/10 text-[#5BAD80] border border-[#5BAD80]/20 text-[9px] font-mono px-2 py-0.5 rounded-full">Done</span>}
         {isActive && <span className="bg-brand-gold/10 text-brand-gold border border-brand-gold/20 text-[9px] font-mono px-2 py-0.5 rounded-full">Active</span>}

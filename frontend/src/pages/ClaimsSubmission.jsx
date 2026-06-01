@@ -3,6 +3,18 @@ import { UploadCloud, FileText, Camera, CheckCircle2, AlertCircle, Send, Save } 
 
 export default function ClaimsSubmission() {
   const [claimAmount, setClaimAmount] = useState('');
+  
+  // State for the two file uploads on this page
+  const [primaryFile, setPrimaryFile] = useState(null);
+  const [evidenceFile, setEvidenceFile] = useState(null);
+
+  const handlePrimaryChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) setPrimaryFile(e.target.files[0].name);
+  };
+
+  const handleEvidenceChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) setEvidenceFile(e.target.files[0].name);
+  };
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -68,17 +80,39 @@ export default function ClaimsSubmission() {
             <h3 className="font-serif text-lg text-brand-gold mb-6 border-b border-gray-800 pb-2">Supporting Documents</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-              <div className="border-2 border-dashed border-gray-700 hover:border-[#4A90D9] hover:bg-[#4A90D9]/5 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all group">
-                <FileText className="text-gray-500 group-hover:text-[#4A90D9] mb-3 transition-colors" size={24} />
-                <div className="text-xs text-gray-300 mb-1">FIR / Hospital Bill / Survey</div>
-                <div className="font-mono text-[9px] text-gray-500">PDF · JPG · Max 10MB</div>
+              
+              {/* Primary Document Upload (Blue Highlight) */}
+              <div>
+                <label htmlFor="primary-upload" className="block border-2 border-dashed border-gray-700 hover:border-[#4A90D9] hover:bg-[#4A90D9]/5 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all group">
+                  <FileText className="text-gray-500 group-hover:text-[#4A90D9] mb-3 transition-colors" size={24} />
+                  {primaryFile ? (
+                    <div className="text-sm text-[#4A90D9] font-medium mb-1 truncate w-full px-4">{primaryFile}</div>
+                  ) : (
+                    <>
+                      <div className="text-xs text-gray-300 mb-1">FIR / Hospital Bill / Survey</div>
+                      <div className="font-mono text-[9px] text-gray-500">PDF · JPG · Max 10MB</div>
+                    </>
+                  )}
+                </label>
+                <input type="file" id="primary-upload" className="hidden" onChange={handlePrimaryChange} />
               </div>
               
-              <div className="border-2 border-dashed border-gray-700 hover:border-[#5BAD80] hover:bg-[#5BAD80]/5 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all group">
-                <Camera className="text-gray-500 group-hover:text-[#5BAD80] mb-3 transition-colors" size={24} />
-                <div className="text-xs text-gray-300 mb-1">Photos / Videos</div>
-                <div className="font-mono text-[9px] text-gray-500">MP4 · JPG · Max 50MB</div>
+              {/* Evidence Document Upload (Green Highlight) */}
+              <div>
+                <label htmlFor="evidence-upload" className="block border-2 border-dashed border-gray-700 hover:border-[#5BAD80] hover:bg-[#5BAD80]/5 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all group">
+                  <Camera className="text-gray-500 group-hover:text-[#5BAD80] mb-3 transition-colors" size={24} />
+                  {evidenceFile ? (
+                    <div className="text-sm text-[#5BAD80] font-medium mb-1 truncate w-full px-4">{evidenceFile}</div>
+                  ) : (
+                    <>
+                      <div className="text-xs text-gray-300 mb-1">Photos / Videos</div>
+                      <div className="font-mono text-[9px] text-gray-500">MP4 · JPG · Max 50MB</div>
+                    </>
+                  )}
+                </label>
+                <input type="file" id="evidence-upload" className="hidden" onChange={handleEvidenceChange} />
               </div>
+
             </div>
 
             <div className="flex gap-4">

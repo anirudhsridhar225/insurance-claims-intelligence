@@ -1,15 +1,59 @@
 @import "tailwindcss";
 
+/* 1. LIGHT MODE VARIABLES (Default) */
+:root {
+  /* Backgrounds */
+  --theme-ink: #F3F6F9;       /* Light gray background */
+  --theme-surface: #FFFFFF;   /* White cards */
+  
+  /* Inverted Grays (Light mode needs dark text/borders) */
+  --theme-gray-100: #111827;  /* Was white text, now almost black */
+  --theme-gray-200: #1F2937;
+  --theme-gray-300: #374151;
+  --theme-gray-400: #4B5563;
+  --theme-gray-500: #6B7280;
+  --theme-gray-700: #E5E7EB;  /* Was dark border, now light border */
+  --theme-gray-800: #D1D5DB;  /* Lighter borders/hover states */
+  
+  /* Brand Colors remain the same in both modes */
+  --theme-gold: #C9A84C;
+  --theme-teal: #2DB5A3;
+}
+
+/* 2. DARK MODE VARIABLES */
+.dark {
+  /* Backgrounds */
+  --theme-ink: #0D1117;
+  --theme-surface: #141B26;
+  
+  /* Original Grays */
+  --theme-gray-100: #f3f4f6;
+  --theme-gray-200: #e5e7eb;
+  --theme-gray-300: #d1d5db;
+  --theme-gray-400: #9ca3af;
+  --theme-gray-500: #6b7280;
+  --theme-gray-700: #374151;
+  --theme-gray-800: #1f2937;
+}
+
+/* 3. TAILWIND V4 THEME MAPPING */
 @theme {
-  /* Your Custom Posh Colors */
-  --color-brand-ink: #0D1117;
-  --color-brand-surface: #141B26;
-  --color-brand-gold: #C9A84C;
-  --color-brand-teal: #2DB5A3;
+  --color-brand-ink: var(--theme-ink);
+  --color-brand-surface: var(--theme-surface);
+  --color-brand-gold: var(--theme-gold);
+  --color-brand-teal: var(--theme-teal);
+  
+  /* Overriding standard Tailwind grays with our dynamic ones */
+  --color-gray-100: var(--theme-gray-100);
+  --color-gray-200: var(--theme-gray-200);
+  --color-gray-300: var(--theme-gray-300);
+  --color-gray-400: var(--theme-gray-400);
+  --color-gray-500: var(--theme-gray-500);
+  --color-gray-700: var(--theme-gray-700);
+  --color-gray-800: var(--theme-gray-800);
 
-  /* Your Custom Animation */
+  /* Animation */
   --animate-fade-in: fadeIn 0.3s ease-out forwards;
-
   @keyframes fadeIn {
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
@@ -18,7 +62,7 @@
 
 /* Base Styles */
 body {
-  @apply bg-brand-ink text-gray-100 antialiased;
+  @apply bg-brand-ink text-gray-100 antialiased transition-colors duration-300;
 }
 
 /* Custom Scrollbar Utility */
